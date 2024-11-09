@@ -25,7 +25,18 @@ wx_stations = {
     "NLPU1": "North Long Point (Abajos)",
 }
 
-snotel_sites = {'Brighton, UT': '366:UT:SNTL', 'Mill D, UT': '628:UT:SNTL', 'Snowbird, UT': '766:UT:SNTL', 'Atwater Plot, UT': '1308:UT:SNTL', 'Thaynes Canyon, UT': '814:UT:SNTL', 'La Sal Mountain, UT': '572:UT:SNTL', 'Gold Basin, UT': '1304:UT:SNTL', 'Mt Pennell, UT': '1269:UT:SNTL', 'Chepeta Lake, UT': '396:UT:SNTL', 'Camp Jackson, UT': '383:UT:SNTL'}
+snotel_sites = {
+    "Brighton, UT": "366:UT:SNTL",
+    "Mill D, UT": "628:UT:SNTL",
+    "Snowbird, UT": "766:UT:SNTL",
+    "Atwater Plot, UT": "1308:UT:SNTL",
+    "Thaynes Canyon, UT": "814:UT:SNTL",
+    "La Sal Mountain, UT": "572:UT:SNTL",
+    "Gold Basin, UT": "1304:UT:SNTL",
+    "Mt Pennell, UT": "1269:UT:SNTL",
+    "Chepeta Lake, UT": "396:UT:SNTL",
+    "Camp Jackson, UT": "383:UT:SNTL",
+}
 
 # Configure DuckDB with MinIO
 duckdb.sql(f"""
@@ -47,7 +58,9 @@ def load_station_data(station_id):
     FROM read_parquet('s3://{bucket_name}/wx_data/{station_id}/*.parquet')
     ORDER BY date_time
     """
-    return duckdb.query(query).df()
+    df = duckdb.query(query).df()
+    df.air_temp_set_1 = (df.air_temp_set_1 * 9 / 5) + 32
+    return df
 
 
 # Helper function to load SNOTEL data
@@ -69,7 +82,9 @@ tab1, tab2 = st.tabs(["Weather Stations", "SNOTEL Stations"])
 
 with tab1:
     st.header("Weather Station Temperature Viewer")
-    station_id = st.selectbox("Select a Weather Station", options=list(wx_stations.keys()))
+    station_id = st.selectbox(
+        "Select a Weather Station", options=list(wx_stations.keys())
+    )
 
     if station_id:
         # Load data for the selected station
@@ -115,9 +130,10 @@ with tab2:
     }
     selected_column = column_map[column_to_plot]
 
-    snotel_name = st.selectbox("Select a SNOTEL Station", options=list(snotel_sites.keys()))
-    snotel_id = snotel_sites[snotel_name]
-
+    snotel_name = st.selectbox(
+        "Select a SNOTEL Station", options=list(snotel_sites.keys())
+    )
+    snotel_id = snotel_sites[snotel_name].replace(":", "_")
 
     with st.spinner("Loading data..."):
         snotel_data = load_snotel_data(snotel_id=snotel_id, sensor=selected_column)
