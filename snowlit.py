@@ -65,7 +65,7 @@ def load_station_data(station_id):
 def load_snotel_data(snotel_id, sensor):
     query = f"""
     SELECT date, {sensor}
-    FROM read_parquet('s3://{bucket_name}/snotel_data/{snotel_id}*.parquet')
+    FROM read_parquet('s3://{bucket_name}/snotel_data/{snotel_id}/*.parquet')
     ORDER BY date
     """
     return duckdb.query(query).df()
