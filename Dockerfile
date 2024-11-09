@@ -16,4 +16,4 @@ RUN uv pip install -n -r requirements.txt --system
 EXPOSE 8501
 
 # Run Streamlit
-ENTRYPOINT ["streamlit", "run", "app.py"]
+ENTRYPOINT ["streamlit", "run", "snowlit.py"]
