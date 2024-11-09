@@ -66,7 +66,7 @@ def load_station_data(station_id):
 # Helper function to load SNOTEL data
 def load_snotel_data(snotel_id, sensor):
     query = f"""
-    SELECT date, {sensor}
+    SELECT dateTime, {sensor}
     FROM read_parquet('s3://{bucket_name}/snotel_data/{snotel_id}/*.parquet')
     ORDER BY date
     """
@@ -116,17 +116,17 @@ with tab2:
     column_to_plot = st.selectbox(
         "Select Data to Plot",
         options=[
-            "TOBS (Temperature)",
-            "SNWD (Snow Depth)",
-            "WTEQ (Snow-Water Equivalent)",
+            "Temperature",
+            "Snow Depth",
+            "Snow-Water Equivalent",
         ],
     )
 
     # Map selector to column names
     column_map = {
-        "TOBS (Temperature)": "TOBS",
-        "SNWD (Snow Depth)": "SNWD",
-        "WTEQ (Snow-Water Equivalent)": "WTEQ",
+        "Temperature": "TOBS",
+        "Snow Depth": "SNWD",
+        "Snow-Water Equivalent": "WTEQ",
     }
     selected_column = column_map[column_to_plot]
 
@@ -141,9 +141,9 @@ with tab2:
     if not snotel_data.empty:
         fig = px.line(
             snotel_data,
-            x="date",
+            x="dateTime",
             y=selected_column,
-            title=f"{selected_column} Over Time - SNOTEL Stations",
+            title=f"{column_to_plot}",
         )
         fig.update_xaxes(title_text="Date")
         fig.update_yaxes(title_text=selected_column)
