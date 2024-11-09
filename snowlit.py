@@ -25,18 +25,7 @@ wx_stations = {
     "NLPU1": "North Long Point (Abajos)",
 }
 
-snotel_sites = {
-    "366:UT:SNTL": "Brighton, UT",
-    "628:UT:SNTL": "Mill D, UT",
-    "766:UT:SNTL": "Snowbird, UT",
-    "1308:UT:SNTL": "Atwater Plot, UT",
-    "814:UT:SNTL": "Thaynes Canyon, UT",
-    "572:UT:SNTL": "La Sal Mountain, UT",
-    "1304:UT:SNTL": "Gold Basin, UT",
-    "1269:UT:SNTL": "Mt Pennell, UT",
-    "396:UT:SNTL": "Chepeta Lake, UT",
-    "383:UT:SNTL": "Camp Jackson, UT",
-}
+snotel_sites = {'Brighton, UT': '366:UT:SNTL', 'Mill D, UT': '628:UT:SNTL', 'Snowbird, UT': '766:UT:SNTL', 'Atwater Plot, UT': '1308:UT:SNTL', 'Thaynes Canyon, UT': '814:UT:SNTL', 'La Sal Mountain, UT': '572:UT:SNTL', 'Gold Basin, UT': '1304:UT:SNTL', 'Mt Pennell, UT': '1269:UT:SNTL', 'Chepeta Lake, UT': '396:UT:SNTL', 'Camp Jackson, UT': '383:UT:SNTL'}
 
 # Configure DuckDB with MinIO
 duckdb.sql(f"""
@@ -118,8 +107,6 @@ with tab2:
         ],
     )
 
-    snotel_id = st.selectbox("Select a SNOTEL Station", options=list(snotel_sites.keys()))
-
     # Map selector to column names
     column_map = {
         "TOBS (Temperature)": "TOBS",
@@ -127,6 +114,10 @@ with tab2:
         "WTEQ (Snow-Water Equivalent)": "WTEQ",
     }
     selected_column = column_map[column_to_plot]
+
+    snotel_name = st.selectbox("Select a SNOTEL Station", options=list(snotel_sites.keys()))
+    snotel_id = snotel_sites[snotel_name]
+
 
     with st.spinner("Loading data..."):
         snotel_data = load_snotel_data(snotel_id=snotel_id, sensor=selected_column)
