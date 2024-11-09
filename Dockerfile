@@ -10,7 +10,7 @@ COPY . .
 
 # Install dependencies
 RUN pip install -U uv
-RUN uv pip install -n -r requirements.txt
+RUN uv pip install -n -r requirements.txt --system
 
 # Expose the port Streamlit uses
 EXPOSE 8501
