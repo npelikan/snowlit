@@ -37,13 +37,14 @@ def load_station_data(bucket, station_id):
     df = pd.read_parquet(
         f"s3://{s3_bucket}/wx_data/{station_id}/",
         storage_options={
-            "endpoint_url": f"https://{os.getenv("MINIO_ENDPOINT")}",
+            "endpoint_url": f"http://{os.getenv("MINIO_ENDPOINT")}",
             "key": aws_access_key,
             "secret": aws_secret_key,
             "client_kwargs": {
                 # "endpoint_url": "https://127.0.0.1:9000",
                 "verify": False,
-            }
+            },
+            "use_ssl": False,
         },
     )
     return df
