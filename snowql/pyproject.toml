@@ -1,0 +1,14 @@
+[project]
+name = "snowql"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "boto3>=1.35.57",
+    "duckdb>=1.1.3",
+    "fastapi[standard]>=0.115.4",
+    "pandas>=2.2.3",
+    "strawberry-graphql>=0.248.1",
+    "uvicorn>=0.32.0",
+]

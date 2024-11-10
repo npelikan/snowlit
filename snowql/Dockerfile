@@ -12,8 +12,8 @@ COPY . .
 RUN pip install -U uv
 RUN uv pip install -n -r requirements.txt --system
 
-# Expose the port Streamlit uses
-EXPOSE 8501
+# Expose the port FastAPI uses
+EXPOSE 80
 
-# Run Streamlit
-ENTRYPOINT ["streamlit", "run", "snowlit.py"]
+# Run FastAPI
+CMD ["fastapi", "run", "api.py", "--port", "80"]
