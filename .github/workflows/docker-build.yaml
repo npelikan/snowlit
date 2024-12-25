@@ -55,6 +55,9 @@ jobs:
     if: github.ref == 'refs/heads/main'
     needs: deploy-user
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
       - name: Update Image Version in the related HelmChart values.yaml
         uses: fjogeleit/yaml-update-action@main
         with:
