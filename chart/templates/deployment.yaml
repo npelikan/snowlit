@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: snowlit
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: snowlit
+  template:
+    metadata:
+      labels:
+        app: snowlit
+    spec:
+      containers:
+      - name: snowlit
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}" 
+        ports:
+          - containerPort: 8501
+        resources:
+          limits:
+            cpu: 100m
+            memory: 500Mi
+        envFrom:
+          - secretRef:
+              name: minio-bucket-creds
