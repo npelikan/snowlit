@@ -20,6 +20,13 @@ jobs:
         uses: actions/checkout@v4
       - name: get version
         run: 'echo ''TAG=''${GITHUB_REF#refs/tags/} >> $GITHUB_ENV'
+      - name: Set short git commit SHA
+        id: vars
+        run: |
+          calculatedSha=$(git rev-parse --short ${{ github.sha }})
+          echo "COMMIT_SHORT_SHA=$calculatedSha" >> $GITHUB_ENV
+      - name: Confirm git commit SHA output
+        run: echo ${{ env.COMMIT_SHORT_SHA }}
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
       - name: Set up Docker Buildx
@@ -37,9 +44,7 @@ jobs:
           push: true
           pull: true
           tags: |
-            ghcr.io/npelikan/snowlit:latest
-            ghcr.io/npelikan/snowlit:${{ github.ref_name }}
-            ghcr.io/npelikan/snowlit:${{ env.TAG }}
+            ghcr.io/npelikan/snowlit:${{ env.COMMIT_SHORT_SHA }}
           platforms: 'linux/amd64,linux/arm64'
           cache-from: type=gha
           cache-to: 'type=gha,mode=max'
@@ -55,5 +60,5 @@ jobs:
         with:
           valueFile: chart/values.yaml
           propertyPath: image.tag
-          value: '${{ github.ref_name }}'
-          message: 'Update Image Version to ${{ github.ref_name }}'
+          value: '${{ env.COMMIT_SHORT_SHA }}'
+          message: 'Update Image Version to ${{ env.COMMIT_SHORT_SHA }}'
