@@ -164,3 +164,4 @@ snowql/.env.dev
 
 # fuk u mac
 .DS_Store
+test_data.ipynb
